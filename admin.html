@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Star Computers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <svg class="sidebar-logo" viewBox="0 0 100 100">
+                <defs>
+                    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#dc2626"/>
+                        <stop offset="100%" style="stop-color:#16a34a"/>
+                    </linearGradient>
+                </defs>
+                <polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="url(#starGrad)"/>
+            </svg>
+            <div class="sidebar-title"><span>STAR</span> Admin</div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+            </div>
+            <a href="#" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Appearance</div>
+            </div>
+            <a href="#" class="nav-item" data-section="theme">
+                <i class="fas fa-palette"></i>
+                <span>Theme & Colors</span>
+            </a>
+            <a href="#" class="nav-item" data-section="media">
+                <i class="fas fa-photo-video"></i>
+                <span>Media Library</span>
+            </a>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Content Management</div>
+            </div>
+            <a href="#" class="nav-item" data-section="company">
+                <i class="fas fa-building"></i>
+                <span>Company Info</span>
+            </a>
+            <a href="#" class="nav-item" data-section="hero">
+                <i class="fas fa-images"></i>
+                <span>Hero Slider</span>
+            </a>
+            <a href="#" class="nav-item" data-section="stats">
+                <i class="fas fa-chart-bar"></i>
+                <span>Statistics</span>
+            </a>
+            <a href="#" class="nav-item" data-section="services">
+                <i class="fas fa-cogs"></i>
+                <span>Services</span>
+            </a>
+            <a href="#" class="nav-item" data-section="about">
+                <i class="fas fa-info-circle"></i>
+                <span>About Section</span>
+            </a>
+            <a href="#" class="nav-item" data-section="contact">
+                <i class="fas fa-envelope"></i>
+                <span>Contact Info</span>
+            </a>
+            <a href="#" class="nav-item" data-section="footer">
+                <i class="fas fa-shoe-prints"></i>
+                <span>Footer</span>
+            </a>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Advanced</div>
+            </div>
+            <a href="#" class="nav-item" data-section="seo">
+                <i class="fas fa-search"></i>
+                <span>SEO Settings</span>
+            </a>
+            <a href="#" class="nav-item" data-section="custom-css">
+                <i class="fas fa-code"></i>
+                <span>Custom CSS</span>
+            </a>
+            <a href="#" class="nav-item" data-section="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Dashboard</h1>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn btn-secondary" onclick="adminPanel.saveAllChanges()">
+                    <i class="fas fa-save"></i>
+                    <span>Save All</span>
+                </button>
+                <button class="btn btn-primary" onclick="adminPanel.openPreview()">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>View Site</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="admin-content">
+            <!-- Dashboard Panel -->
+            <div id="dashboard-panel" class="section-panel active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-value" id="dash-slides">3</div>
+                        <div class="stat-label">Hero Slides</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="stat-value" id="dash-services">3</div>
+                        <div class="stat-label">Services</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-value" id="dash-stats">4</div>
+                        <div class="stat-label">Statistics</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value">Active</div>
+                        <div class="stat-label">Site Status</div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-rocket"></i> Quick Actions</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions-grid">
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('theme')">
+                                <i class="fas fa-palette"></i>
+                                <span>Change Colors</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('media')">
+                                <i class="fas fa-image"></i>
+                                <span>Upload Images</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('hero')">
+                                <i class="fas fa-images"></i>
+                                <span>Edit Slides</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('services')">
+                                <i class="fas fa-cogs"></i>
+                                <span>Edit Services</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('company')">
+                                <i class="fas fa-building"></i>
+                                <span>Company Info</span>
+                            </button>
+                            <button class="quick-action-btn green" onclick="adminPanel.openPreview()">
+                                <i class="fas fa-eye"></i>
+                                <span>Preview Site</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-info-circle"></i> Getting Started</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted); line-height: 1.8;">
+                            Welcome to the Star Computers Admin Panel! Manage all content on your landing page.
+                            Use the sidebar to navigate between sections.
+                        </p>
+                        <div class="alert alert-info" style="margin-top: 1rem;">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>New features: Change colors, upload images, add custom CSS, and configure SEO settings!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme & Colors Panel -->
+            <div id="theme-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-palette"></i> Color Scheme</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" style="margin-bottom: 1.5rem;">
+                            <i class="fas fa-info-circle"></i>
+                            <span>After saving, refresh the main site (index.html) to see your color changes.</span>
+                        </div>
+                        
+                        <div class="color-scheme-presets">
+                            <h4 style="margin-bottom: 1rem;">Quick Presets</h4>
+                            <div class="preset-buttons">
+                                <button class="preset-btn" onclick="adminPanel.applyColorPreset('red-green')" style="background: linear-gradient(135deg, #dc2626, #16a34a);">Red & Green</button>
+                                <button class="preset-btn" onclick="adminPanel.applyColorPreset('blue-purple')" style="background: linear-gradient(135deg, #3b82f6, #8b5cf6);">Blue & Purple</button>
+                                <button class="preset-btn" onclick="adminPanel.applyColorPreset('orange-teal')" style="background: linear-gradient(135deg, #f97316, #14b8a6);">Orange & Teal</button>
+                                <button class="preset-btn" onclick="adminPanel.applyColorPreset('pink-indigo')" style="background: linear-gradient(135deg, #ec4899, #6366f1);">Pink & Indigo</button>
+                            </div>
+                        </div>
+
+                        <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+                        <h4 style="margin-bottom: 1rem;">Custom Colors</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">Primary Color</label>
+                                    <div class="color-input-group">
+                                        <input type="color" id="theme-primaryColor" value="#dc2626">
+                                        <input type="text" class="form-control" id="theme-primaryColorHex" value="#dc2626">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">Secondary Color</label>
+                                    <div class="color-input-group">
+                                        <input type="color" id="theme-secondaryColor" value="#16a34a">
+                                        <input type="text" class="form-control" id="theme-secondaryColorHex" value="#16a34a">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">Background Color</label>
+                                    <div class="color-input-group">
+                                        <input type="color" id="theme-bgColor" value="#f9fafb">
+                                        <input type="text" class="form-control" id="theme-bgColorHex" value="#f9fafb">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label class="form-label">Text Color</label>
+                                    <div class="color-input-group">
+                                        <input type="color" id="theme-textColor" value="#111827">
+                                        <input type="text" class="form-control" id="theme-textColorHex" value="#111827">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+                        <h4 style="margin-bottom: 1rem;">Theme Mode</h4>
+                        <div class="theme-toggle-group">
+                            <button class="theme-mode-btn active" id="theme-light" onclick="adminPanel.setThemeMode('light')">
+                                <i class="fas fa-sun"></i> Light Mode
+                            </button>
+                            <button class="theme-mode-btn" id="theme-dark" onclick="adminPanel.setThemeMode('dark')">
+                                <i class="fas fa-moon"></i> Dark Mode
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 2rem;">
+                            <button type="button" class="btn btn-primary" onclick="adminPanel.saveTheme()">
+                                <i class="fas fa-save"></i> Save Theme Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-desktop"></i> Live Preview</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="theme-preview" class="theme-preview-box">
+                            <div class="preview-header">
+                                <div class="preview-logo">STAR COMPUTERS</div>
+                            </div>
+                            <div class="preview-hero">
+                                <h2>Your Trusted <span class="highlight">Technology</span> Partner</h2>
+                                <p>Delivering cutting-edge IT solutions since 1993</p>
+                                <button class="preview-btn-primary">Get Started</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Library Panel -->
+            <div id="media-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-photo-video"></i> Media Library</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-zone" id="upload-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop images here or click to upload</p>
+                            <input type="file" id="media-upload" accept="image/*" multiple style="display: none;">
+                            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('media-upload').click()">Browse Files</button>
+                        </div>
+
+                        <h4 style="margin: 1.5rem 0 1rem;">Saved Images</h4>
+                        <div class="media-grid" id="media-grid">
+                            <!-- Media items will be loaded here -->
+                        </div>
+
+                        <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+                        <h4 style="margin-bottom: 1rem;">Add Image from URL</h4>
+                        <div class="url-input-group">
+                            <input type="url" class="form-control" id="external-url" placeholder="https://example.com/image.jpg">
+                            <button class="btn btn-primary" onclick="adminPanel.addExternalImage()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Photos -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-images"></i> Free Stock Photos (Unsplash)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="stock-categories">
+                            <button class="stock-cat-btn active" onclick="adminPanel.loadStockPhotos('technology')">Technology</button>
+                            <button class="stock-cat-btn" onclick="adminPanel.loadStockPhotos('office')">Office</button>
+                            <button class="stock-cat-btn" onclick="adminPanel.loadStockPhotos('business')">Business</button>
+                            <button class="stock-cat-btn" onclick="adminPanel.loadStockPhotos('computer')">Computer</button>
+                        </div>
+                        <div class="stock-photos-grid" id="stock-photos">
+                            <!-- Stock photos will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Info Panel -->
+            <div id="company-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-building"></i> Company Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="company-form">
+                            <div class="form-group">
+                                <label class="form-label">Company Logo URL</label>
+                                <input type="text" class="form-control" id="company-logo" placeholder="./star logo.png">
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Company Name</label>
+                                        <input type="text" class="form-control" id="company-name" placeholder="STAR COMPUTERS">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Tagline</label>
+                                        <input type="text" class="form-control" id="company-tagline" placeholder="SINCE 1993">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Company Description</label>
+                                <textarea class="form-control" id="company-description" placeholder="Brief description..." rows="3"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="text" class="form-control" id="company-phone" placeholder="+88-01712-908621">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="company-email" placeholder="star@hotmail.com">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Office Address</label>
+                                        <textarea class="form-control" id="company-officeAddress" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Registered Address</label>
+                                        <textarea class="form-control" id="company-registeredAddress" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="adminPanel.saveCompany()">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Slider Panel -->
+            <div id="hero-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-images"></i> Hero Slider</h3>
+                        <button class="btn btn-primary btn-sm" onclick="adminPanel.addNewSlide()">
+                            <i class="fas fa-plus"></i> Add Slide
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Manage your hero slides. Click to edit.</p>
+                        <div id="slides-container" class="slides-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Panel -->
+            <div id="stats-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-chart-bar"></i> Statistics</h3>
+                        <button class="btn btn-primary btn-sm" onclick="adminPanel.addNewStat()">
+                            <i class="fas fa-plus"></i> Add Stat
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="stats-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Panel -->
+            <div id="services-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-cogs"></i> Services</h3>
+                        <button class="btn btn-primary btn-sm" onclick="adminPanel.addNewService()">
+                            <i class="fas fa-plus"></i> Add Service
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="services-container" class="services-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Panel -->
+            <div id="about-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-info-circle"></i> About Section</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="about-form">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Badge Text</label>
+                                        <input type="text" class="form-control" id="about-badge" placeholder="About Us">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="about-title" placeholder="Trusted Since">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Title Highlight</label>
+                                        <input type="text" class="form-control" id="about-titleHighlight" placeholder="1993">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description (Paragraph 1)</label>
+                                <textarea class="form-control" id="about-description1" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description (Paragraph 2)</label>
+                                <textarea class="form-control" id="about-description2" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="adminPanel.saveAbout()">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+
+                        <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+                        <div class="section-header-flex">
+                            <h4>Why Choose Us Items</h4>
+                            <button class="btn btn-primary btn-sm" onclick="adminPanel.addWhyChooseUsItem()">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                        </div>
+                        <div id="whyChooseUs-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Panel -->
+            <div id="contact-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-envelope"></i> Contact Section</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="contact-form">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Badge Text</label>
+                                        <input type="text" class="form-control" id="contact-badge" placeholder="Get In Touch">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="contact-title" placeholder="Contact Us">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Subtitle</label>
+                                        <input type="text" class="form-control" id="contact-subtitle" placeholder="We're here to help...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CTA Title</label>
+                                <input type="text" class="form-control" id="contact-ctaTitle" placeholder="Ready to Get Started?">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">CTA Description</label>
+                                <textarea class="form-control" id="contact-ctaDescription" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="adminPanel.saveContact()">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Panel -->
+            <div id="footer-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-shoe-prints"></i> Footer Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="footer-form">
+                            <div class="form-group">
+                                <label class="form-label">Copyright Text</label>
+                                <input type="text" class="form-control" id="footer-copyright" placeholder="© 2026 Star Computers.">
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Designer Credit</label>
+                                        <input type="text" class="form-control" id="footer-designedBy">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Designer Link</label>
+                                        <input type="url" class="form-control" id="footer-designerLink">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+                            <h4 style="margin-bottom: 1rem;">Social Media Links</h4>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label"><i class="fab fa-facebook"></i> Facebook</label>
+                                        <input type="url" class="form-control" id="social-facebook">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label"><i class="fab fa-twitter"></i> Twitter</label>
+                                        <input type="url" class="form-control" id="social-twitter">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label"><i class="fab fa-linkedin"></i> LinkedIn</label>
+                                        <input type="url" class="form-control" id="social-linkedin">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label class="form-label"><i class="fab fa-whatsapp"></i> WhatsApp</label>
+                                        <input type="text" class="form-control" id="social-whatsapp">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="adminPanel.saveFooter()">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEO Settings Panel -->
+            <div id="seo-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-search"></i> SEO Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="seo-form">
+                            <div class="form-group">
+                                <label class="form-label">Page Title</label>
+                                <input type="text" class="form-control" id="seo-title" placeholder="Star Computers - Tech Solutions Since 1993">
+                                <small class="form-hint">Recommended: 50-60 characters</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Meta Description</label>
+                                <textarea class="form-control" id="seo-description" rows="3"></textarea>
+                                <small class="form-hint">Recommended: 150-160 characters</small>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Meta Keywords</label>
+                                <input type="text" class="form-control" id="seo-keywords" placeholder="IT solutions, computer training">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="adminPanel.saveSEO()">
+                                <i class="fas fa-save"></i> Save SEO Settings
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom CSS Panel -->
+            <div id="custom-css-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-code"></i> Custom CSS</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Add custom CSS to override default styles.</p>
+                        <div class="form-group">
+                            <label class="form-label">Custom CSS Code</label>
+                            <textarea class="form-control code-editor" id="custom-css" rows="15" placeholder="/* Your custom CSS here */"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="adminPanel.saveCustomCSS()">
+                            <i class="fas fa-save"></i> Save Custom CSS
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div id="settings-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-database"></i> Data Management</h3>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Backup and restore your content settings.</p>
+                        <div class="import-export-btns">
+                            <button class="btn btn-success" onclick="adminPanel.exportContent()">
+                                <i class="fas fa-download"></i> Export All Content
+                            </button>
+                            <button class="btn btn-secondary" onclick="adminPanel.importContent()">
+                                <i class="fas fa-upload"></i> Import Content
+                            </button>
+                            <input type="file" id="importInput" accept=".json" onchange="adminPanel.handleImport(event)" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-undo"></i> Reset Content</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Warning: This will reset all content to default values!</span>
+                        </div>
+                        <button class="btn btn-danger" onclick="adminPanel.resetAllContent()">
+                            <i class="fas fa-trash"></i> Reset to Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    
+    <!-- Slide Edit Modal -->
+    <div id="slide-modal" class="modal-overlay">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Slide</h3>
+                <button class="modal-close" onclick="adminPanel.closeModal('slide-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="slide-id">
+                <div class="form-group">
+                    <label class="form-label">Background Image URL</label>
+                    <input type="url" class="form-control" id="slide-bgImage">
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Badge Text</label>
+                            <input type="text" class="form-control" id="slide-badge">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Badge Icon (e.g., fas fa-star)</label>
+                            <input type="text" class="form-control" id="slide-badgeIcon">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">Title Start</label>
+                            <input type="text" class="form-control" id="slide-title">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">Title Highlight</label>
+                            <input type="text" class="form-control" id="slide-titleHighlight">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="form-label">Title End</label>
+                            <input type="text" class="form-control" id="slide-titleEnd">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="slide-description" rows="3"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Button Text</label>
+                            <input type="text" class="form-control" id="slide-primaryBtnText">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Button Link</label>
+                            <input type="text" class="form-control" id="slide-primaryBtnLink" placeholder="#contact">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="adminPanel.deleteSlide()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-secondary" onclick="adminPanel.closeModal('slide-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="adminPanel.saveSlide()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Edit Modal -->
+    <div id="stat-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Statistic</h3>
+                <button class="modal-close" onclick="adminPanel.closeModal('stat-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="stat-id">
+                <div class="form-group">
+                    <label class="form-label">Value (e.g., 30+)</label>
+                    <input type="text" class="form-control" id="stat-value">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Label</label>
+                    <input type="text" class="form-control" id="stat-label">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Color Theme</label>
+                    <select class="form-control" id="stat-gradient">
+                        <option value="from-red-600 to-red-500">Red</option>
+                        <option value="from-green-600 to-green-500">Green</option>
+                        <option value="from-blue-400 to-cyan-500">Blue / Cyan</option>
+                        <option value="from-purple-400 to-pink-500">Purple / Pink</option>
+                        <option value="from-yellow-400 to-amber-500">Yellow / Amber</option>
+                        <option value="from-emerald-400 to-teal-500">Emerald / Teal</option>
+                        <option value="from-orange-400 to-red-500">Orange / Red</option>
+                        <option value="from-indigo-400 to-violet-500">Indigo / Violet</option>
+                        <option value="from-red-500 to-green-500">Red to Green</option>
+                        <option value="from-green-500 to-red-500">Green to Red</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label">Preview</label>
+                    <div id="stat-color-preview" style="padding: 1rem; text-align: center; border-radius: 8px; background: #f3f4f6;">
+                        <span style="font-size: 2rem; font-weight: bold;" class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text" id="stat-preview-text">30+</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="adminPanel.deleteStat()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-secondary" onclick="adminPanel.closeModal('stat-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="adminPanel.saveStat()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Edit Modal -->
+    <div id="service-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Service</h3>
+                <button class="modal-close" onclick="adminPanel.closeModal('service-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="service-id">
+                <div class="form-group">
+                    <label class="form-label">Service Title</label>
+                    <input type="text" class="form-control" id="service-title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="service-description" rows="4"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Icon (FontAwesome)</label>
+                            <input type="text" class="form-control" id="service-icon" placeholder="fas fa-lightbulb">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Color Theme</label>
+                            <select class="form-control" id="service-colorClass">
+                                <option value="red">Red</option>
+                                <option value="green">Green</option>
+                                <option value="blue">Blue</option>
+                                <option value="purple">Purple</option>
+                                <option value="emerald">Emerald</option>
+                                <option value="orange">Orange</option>
+                                <option value="indigo">Indigo</option>
+                                <option value="pink">Pink</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Custom Gradient (Tailwind classes, e.g., from-blue-500 to-cyan-500)</label>
+                    <input type="text" class="form-control" id="service-gradient" placeholder="from-blue-500 to-cyan-500">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="adminPanel.deleteService()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-secondary" onclick="adminPanel.closeModal('service-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="adminPanel.saveService()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Why Choose Us Edit Modal -->
+    <div id="whyChooseUs-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Item</h3>
+                <button class="modal-close" onclick="adminPanel.closeModal('whyChooseUs-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="whyChooseUs-index">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" id="whyChooseUs-title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subtitle</label>
+                    <input type="text" class="form-control" id="whyChooseUs-subtitle">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Color Theme</label>
+                    <select class="form-control" id="whyChooseUs-gradient">
+                        <option value="from-green-500 to-green-600">Green</option>
+                        <option value="from-red-500 to-red-600">Red</option>
+                        <option value="from-blue-500 to-blue-600">Blue</option>
+                        <option value="from-purple-500 to-purple-600">Purple</option>
+                        <option value="from-emerald-400 to-teal-500">Emerald / Teal</option>
+                        <option value="from-yellow-400 to-amber-500">Yellow / Amber</option>
+                        <option value="from-indigo-400 to-violet-500">Indigo / Violet</option>
+                        <option value="from-pink-400 to-rose-500">Pink / Rose</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="adminPanel.deleteWhyChooseUsItem()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-secondary" onclick="adminPanel.closeModal('whyChooseUs-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="adminPanel.saveWhyChooseUs()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Button -->
+    <a href="index.html" target="_blank" class="btn btn-primary preview-btn">
+        <i class="fas fa-eye"></i> Preview
+    </a>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/site-content.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
