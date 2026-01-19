@@ -62,6 +62,90 @@ const defaultContent = {
         { id: 4, value: "24/7", label: "Support", gradient: "from-emerald-400 to-teal-500" }
     ],
 
+    // Awards & Achievements
+    awards: [
+        {
+            id: 1,
+            title: "Best IT Service Provider",
+            description: "Tech Excellence Awards 2024",
+            icon: "fas fa-award",
+            image: "",
+            iconGradient: "from-yellow-400 to-amber-500",
+            bgGradient: "from-yellow-50 to-amber-50",
+            borderColor: "border-yellow-200"
+        },
+        {
+            id: 2,
+            title: "ISO 9001:2015 Certified",
+            description: "Quality Management System",
+            icon: "fas fa-certificate",
+            image: "",
+            iconGradient: "from-blue-400 to-indigo-500",
+            bgGradient: "from-blue-50 to-indigo-50",
+            borderColor: "border-blue-200"
+        },
+        {
+            id: 3,
+            title: "30 Years of Excellence",
+            description: "Industry Recognition 2023",
+            icon: "fas fa-star",
+            image: "",
+            iconGradient: "from-green-400 to-emerald-500",
+            bgGradient: "from-green-50 to-emerald-50",
+            borderColor: "border-green-200"
+        },
+        {
+            id: 4,
+            title: "Trusted Partner Award",
+            description: "Microsoft Bangladesh 2023",
+            icon: "fas fa-handshake",
+            image: "",
+            iconGradient: "from-purple-400 to-violet-500",
+            bgGradient: "from-purple-50 to-violet-50",
+            borderColor: "border-purple-200"
+        }
+    ],
+
+    // Clients
+    clients: [
+        {
+            id: 1,
+            name: "Bangladesh Bank",
+            industry: "Banking",
+            icon: "fas fa-university",
+            image: "",
+            colorClass: "blue",
+            gradient: "from-blue-500 to-blue-600"
+        },
+        {
+            id: 2,
+            name: "Dhaka University",
+            industry: "Education",
+            icon: "fas fa-graduation-cap",
+            image: "",
+            colorClass: "green",
+            gradient: "from-green-500 to-emerald-600"
+        },
+        {
+            id: 3,
+            name: "Square Hospital",
+            industry: "Healthcare",
+            icon: "fas fa-hospital",
+            image: "",
+            colorClass: "purple",
+            gradient: "from-purple-500 to-violet-600"
+        },
+        {
+            id: 4,
+            name: "Walton Group",
+            industry: "Manufacturing",
+            icon: "fas fa-industry",
+            image: "",
+            colorClass: "orange",
+            gradient: "from-orange-500 to-red-600"
+        }
+    ],
+
     // Services
     services: [
         {

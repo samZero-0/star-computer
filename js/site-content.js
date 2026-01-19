@@ -67,6 +67,12 @@ const defaultContent = {
         { id: 4, value: "24/7", label: "Support", gradient: "from-emerald-400 to-teal-500" }
     ],
 
+    // Awards & Achievements
+    awards: [],
+
+    // Clients
+    clients: [],
+
     // Services
     services: [
         {

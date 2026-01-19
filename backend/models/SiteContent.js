@@ -28,6 +28,27 @@ const StatSchema = new mongoose.Schema({
     gradient: String
 }, { _id: false });
 
+const AwardSchema = new mongoose.Schema({
+    id: Number,
+    title: String,
+    description: String,
+    icon: String,
+    image: String,
+    iconGradient: String,
+    bgGradient: String,
+    borderColor: String
+}, { _id: false });
+
+const ClientSchema = new mongoose.Schema({
+    id: Number,
+    name: String,
+    industry: String,
+    icon: String,
+    image: String,
+    colorClass: String,
+    gradient: String
+}, { _id: false });
+
 const ServiceSchema = new mongoose.Schema({
     id: Number,
     title: String,
@@ -88,6 +109,8 @@ const SiteContentSchema = new mongoose.Schema({
     company: CompanySchema,
     heroSlides: [HeroSlideSchema],
     stats: [StatSchema],
+    awards: [AwardSchema],
+    clients: [ClientSchema],
     services: [ServiceSchema],
     about: AboutSchema,
     contact: ContactSchema,

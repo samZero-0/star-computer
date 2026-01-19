@@ -60,6 +60,14 @@
                 <i class="fas fa-chart-bar"></i>
                 <span>Statistics</span>
             </a>
+            <a href="#" class="nav-item" data-section="awards">
+                <i class="fas fa-trophy"></i>
+                <span>Awards</span>
+            </a>
+            <a href="#" class="nav-item" data-section="clients">
+                <i class="fas fa-users"></i>
+                <span>Clients</span>
+            </a>
             <a href="#" class="nav-item" data-section="services">
                 <i class="fas fa-cogs"></i>
                 <span>Services</span>
@@ -144,6 +152,20 @@
                         <div class="stat-label">Statistics</div>
                     </div>
                     <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-value" id="dash-awards">0</div>
+                        <div class="stat-label">Awards</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value" id="dash-clients">0</div>
+                        <div class="stat-label">Clients</div>
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-icon purple">
                             <i class="fas fa-check-circle"></i>
                         </div>
@@ -173,6 +195,14 @@
                             <button class="quick-action-btn" onclick="adminPanel.navigateTo('services')">
                                 <i class="fas fa-cogs"></i>
                                 <span>Edit Services</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('awards')">
+                                <i class="fas fa-trophy"></i>
+                                <span>Edit Awards</span>
+                            </button>
+                            <button class="quick-action-btn" onclick="adminPanel.navigateTo('clients')">
+                                <i class="fas fa-users"></i>
+                                <span>Edit Clients</span>
                             </button>
                             <button class="quick-action-btn" onclick="adminPanel.navigateTo('company')">
                                 <i class="fas fa-building"></i>
@@ -452,6 +482,38 @@
                     </div>
                     <div class="card-body">
                         <div id="stats-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Awards Panel -->
+            <div id="awards-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-trophy"></i> Awards & Achievements</h3>
+                        <button class="btn btn-primary btn-sm" onclick="adminPanel.addNewAward()">
+                            <i class="fas fa-plus"></i> Add Award
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Manage awards displayed in the marquee slider</p>
+                        <div id="awards-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clients Panel -->
+            <div id="clients-panel" class="section-panel">
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-users"></i> Clients</h3>
+                        <button class="btn btn-primary btn-sm" onclick="adminPanel.addNewClient()">
+                            <i class="fas fa-plus"></i> Add Client
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Manage client companies and their industries</p>
+                        <div id="clients-container" class="services-grid"></div>
                     </div>
                 </div>
             </div>
@@ -947,6 +1009,123 @@
                 </button>
                 <button class="btn btn-secondary" onclick="adminPanel.closeModal('whyChooseUs-modal')">Cancel</button>
                 <button class="btn btn-primary" onclick="adminPanel.saveWhyChooseUs()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Award Edit Modal -->
+    <div id="award-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Award</h3>
+                <button class="modal-close" onclick="adminPanel.closeModal('award-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="award-id">
+                <div class="form-group">
+                    <label class="form-label">Award Title</label>
+                    <input type="text" class="form-control" id="award-title" placeholder="Best IT Service Provider">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Award Description / Organization</label>
+                    <input type="text" class="form-control" id="award-description" placeholder="Tech Excellence Awards 2024">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL (Optional)</label>
+                    <input type="text" class="form-control" id="award-image" placeholder="https://example.com/award-image.png">
+                    <small class="form-hint">If provided, the image will be displayed instead of the icon</small>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Icon (FontAwesome) - Fallback</label>
+                            <input type="text" class="form-control" id="award-icon" placeholder="fas fa-award">
+                            <small class="form-hint">Used if no image is provided. Examples: fas fa-award, fas fa-trophy, fas fa-certificate</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Color Theme</label>
+                            <select class="form-control" id="award-gradient">
+                                <option value="from-yellow-400 to-amber-500|from-yellow-50 to-amber-50|border-yellow-200">Gold</option>
+                                <option value="from-blue-400 to-indigo-500|from-blue-50 to-indigo-50|border-blue-200">Blue</option>
+                                <option value="from-green-400 to-emerald-500|from-green-50 to-emerald-50|border-green-200">Green</option>
+                                <option value="from-purple-400 to-violet-500|from-purple-50 to-violet-50|border-purple-200">Purple</option>
+                                <option value="from-red-400 to-rose-500|from-red-50 to-rose-50|border-red-200">Red</option>
+                                <option value="from-pink-400 to-pink-500|from-pink-50 to-pink-50|border-pink-200">Pink</option>
+                                <option value="from-orange-400 to-amber-500|from-orange-50 to-amber-50|border-orange-200">Orange</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="adminPanel.deleteAward()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-secondary" onclick="adminPanel.closeModal('award-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="adminPanel.saveAward()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Edit Modal -->
+    <div id="client-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Client</h3>
+                <button class="modal-close" onclick="adminPanel.closeModal('client-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="client-id">
+                <div class="form-group">
+                    <label class="form-label">Client Name</label>
+                    <input type="text" class="form-control" id="client-name" placeholder="Bangladesh Bank">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Industry</label>
+                    <input type="text" class="form-control" id="client-industry" placeholder="Banking">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Logo/Image URL (Optional)</label>
+                    <input type="text" class="form-control" id="client-image" placeholder="https://example.com/client-logo.png">
+                    <small class="form-hint">If provided, the logo will be displayed instead of the icon</small>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Icon (FontAwesome) - Fallback</label>
+                            <input type="text" class="form-control" id="client-icon" placeholder="fas fa-university">
+                            <small class="form-hint">Used if no image is provided. Examples: fas fa-university, fas fa-hospital</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Color Theme</label>
+                            <select class="form-control" id="client-colorClass">
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="purple">Purple</option>
+                                <option value="orange">Orange</option>
+                                <option value="red">Red</option>
+                                <option value="indigo">Indigo</option>
+                                <option value="pink">Pink</option>
+                                <option value="emerald">Emerald</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="adminPanel.deleteClient()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-secondary" onclick="adminPanel.closeModal('client-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="adminPanel.saveClient()">
                     <i class="fas fa-save"></i> Save
                 </button>
             </div>

@@ -12,6 +12,8 @@ class ContentLoader {
         this.loadHeroSlides();
         this.loadCompanyInfo();
         this.loadStats();
+        this.loadAwards();
+        this.loadClients();
         this.loadServices();
         this.loadAbout();
         this.loadContact();
@@ -420,6 +422,103 @@ class ContentLoader {
                     <div class="text-gray-600">${stat.label}</div>
                 </div>
             `).join('');
+            
+            // Re-initialize reveal animations for new elements
+            this.initRevealAnimations();
+        }
+    }
+
+    loadAwards() {
+        const awards = this.content.awards;
+        const awardsSection = document.getElementById('awards');
+        const awardsTrack = document.getElementById('awards-track');
+        
+        console.log('Loading awards:', awards?.length, 'Awards track found:', !!awardsTrack);
+        
+        // Hide section if no awards
+        if (awardsSection) {
+            awardsSection.style.display = (awards && awards.length > 0) ? 'block' : 'none';
+        }
+        
+        if (awardsTrack && awards && awards.length > 0) {
+            // Generate awards with modern design
+            const awardsHTML = awards.map((award, index) => {
+                // Use image if provided, otherwise fall back to icon
+                const iconOrImage = award.image && award.image.trim() !== '' 
+                    ? `<img src="${award.image}" alt="${award.title}" class="w-8 h-8 object-contain" onerror="this.onerror=null; this.outerHTML='<i class=\\'${award.icon} text-white text-xl\\'></i>';">`
+                    : `<i class="${award.icon} text-white text-xl"></i>`;
+                
+                return `
+                <div class="award-item group flex items-center gap-5 px-7 py-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-gray-200 transition-all duration-300 min-w-max cursor-default">
+                    <div class="award-icon w-14 h-14 bg-gradient-to-br ${award.iconGradient} rounded-2xl flex items-center justify-center shadow-lg transition-transform duration-300">
+                        ${iconOrImage}
+                    </div>
+                    <div class="pr-2">
+                        <h4 class="font-bold text-gray-900 text-base mb-1">${award.title}</h4>
+                        <p class="text-sm text-gray-500 flex items-center gap-1.5">
+                            <i class="fas fa-calendar-alt text-xs opacity-60"></i>
+                            ${award.description}
+                        </p>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            
+            // Duplicate content for seamless marquee
+            awardsTrack.innerHTML = awardsHTML + awardsHTML;
+        }
+    }
+
+    loadClients() {
+        const clients = this.content.clients;
+        const clientsSection = document.getElementById('clients');
+        const clientsGrid = document.getElementById('clients-grid');
+        
+        console.log('Loading clients:', clients?.length, 'Clients grid found:', !!clientsGrid);
+        
+        // Hide section if no clients
+        if (clientsSection) {
+            clientsSection.style.display = (clients && clients.length > 0) ? 'block' : 'none';
+        }
+        
+        if (clientsGrid && clients && clients.length > 0) {
+            const colorMap = {
+                blue: { border: 'hover:border-blue-400', badge: 'text-blue-700 bg-blue-100', shadow: 'group-hover:shadow-blue-200/50' },
+                green: { border: 'hover:border-green-400', badge: 'text-green-700 bg-green-100', shadow: 'group-hover:shadow-green-200/50' },
+                purple: { border: 'hover:border-purple-400', badge: 'text-purple-700 bg-purple-100', shadow: 'group-hover:shadow-purple-200/50' },
+                orange: { border: 'hover:border-orange-400', badge: 'text-orange-700 bg-orange-100', shadow: 'group-hover:shadow-orange-200/50' },
+                red: { border: 'hover:border-red-400', badge: 'text-red-700 bg-red-100', shadow: 'group-hover:shadow-red-200/50' },
+                indigo: { border: 'hover:border-indigo-400', badge: 'text-indigo-700 bg-indigo-100', shadow: 'group-hover:shadow-indigo-200/50' },
+                pink: { border: 'hover:border-pink-400', badge: 'text-pink-700 bg-pink-100', shadow: 'group-hover:shadow-pink-200/50' },
+                emerald: { border: 'hover:border-emerald-400', badge: 'text-emerald-700 bg-emerald-100', shadow: 'group-hover:shadow-emerald-200/50' }
+            };
+
+            clientsGrid.innerHTML = clients.map((client, index) => {
+                const colors = colorMap[client.colorClass] || colorMap.blue;
+                
+                // Use image if provided, otherwise fall back to icon
+                const iconOrImage = client.image && client.image.trim() !== '' 
+                    ? `<img src="${client.image}" alt="${client.name}" class="w-10 h-10 object-contain" onerror="this.onerror=null; this.outerHTML='<i class=\\'${client.icon} text-white text-2xl\\'></i>';">`
+                    : `<i class="${client.icon} text-white text-2xl"></i>`;
+                
+                return `
+                <div class="client-card group bg-white/70 backdrop-blur-sm p-7 rounded-3xl border-2 border-gray-200/50 ${colors.border} shadow-lg hover:shadow-2xl ${colors.shadow} transition-all duration-500 reveal cursor-pointer" ${index > 0 ? `style="transition-delay: ${index * 0.08}s;"` : ''}>
+                    <div class="flex flex-col items-center text-center">
+                        <div class="client-logo-wrapper relative mb-5">
+                            <div class="absolute inset-0 bg-gradient-to-br ${client.gradient} rounded-3xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                            <div class="relative w-20 h-20 bg-gradient-to-br ${client.gradient} rounded-3xl flex items-center justify-center shadow-xl">
+                                ${iconOrImage}
+                            </div>
+                        </div>
+                        <h4 class="font-bold text-gray-900 text-lg mb-2 group-hover:text-gray-700 transition-colors">${client.name}</h4>
+                        <div class="flex items-center gap-1.5 ${colors.badge} px-4 py-1.5 rounded-full font-medium text-xs shadow-sm">
+                            <div class="w-1.5 h-1.5 rounded-full bg-current opacity-60"></div>
+                            ${client.industry}
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
             
             // Re-initialize reveal animations for new elements
             this.initRevealAnimations();

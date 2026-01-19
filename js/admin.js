@@ -81,6 +81,8 @@ class AdminPanel {
             'company': 'Company Info',
             'hero': 'Hero Slider',
             'stats': 'Statistics',
+            'awards': 'Awards & Achievements',
+            'clients': 'Clients',
             'services': 'Services',
             'about': 'About Section',
             'contact': 'Contact Info',
@@ -119,6 +121,12 @@ class AdminPanel {
                 break;
             case 'stats':
                 this.loadStats();
+                break;
+            case 'awards':
+                this.loadAwards();
+                break;
+            case 'clients':
+                this.loadClients();
                 break;
             case 'services':
                 this.loadServices();
@@ -159,9 +167,17 @@ class AdminPanel {
         const content = this.content;
         
         // Update dashboard stats
-        document.getElementById('dash-slides')?.textContent && (document.getElementById('dash-slides').textContent = content.heroSlides?.length || 3);
-        document.getElementById('dash-services')?.textContent && (document.getElementById('dash-services').textContent = content.services?.length || 3);
-        document.getElementById('dash-stats')?.textContent && (document.getElementById('dash-stats').textContent = content.stats?.length || 4);
+        const dashSlides = document.getElementById('dash-slides');
+        const dashServices = document.getElementById('dash-services');
+        const dashStats = document.getElementById('dash-stats');
+        const dashAwards = document.getElementById('dash-awards');
+        const dashClients = document.getElementById('dash-clients');
+        
+        if (dashSlides) dashSlides.textContent = content.heroSlides?.length || 0;
+        if (dashServices) dashServices.textContent = content.services?.length || 0;
+        if (dashStats) dashStats.textContent = content.stats?.length || 0;
+        if (dashAwards) dashAwards.textContent = content.awards?.length || 0;
+        if (dashClients) dashClients.textContent = content.clients?.length || 0;
     }
 
     // Company Form
@@ -1005,6 +1021,292 @@ class AdminPanel {
     // Settings
     loadSettings() {
         // Settings are loaded automatically
+    }
+
+    // Awards Management
+    loadAwards() {
+        const container = document.getElementById('awards-container');
+        if (!container) return;
+
+        // Initialize awards array if it doesn't exist
+        if (!this.content.awards) {
+            this.content.awards = [];
+        }
+
+        const awards = this.content.awards;
+        
+        if (awards.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">No awards added yet. Click "Add Award" to create your first award.</p>';
+            return;
+        }
+        
+        container.innerHTML = awards.map((award, index) => `
+            <div class="list-item">
+                <div class="list-item-content">
+                    <div class="list-item-title"><i class="${award.icon}" style="margin-right: 8px;"></i>${award.title}</div>
+                    <div class="list-item-subtitle">${award.description}</div>
+                </div>
+                <div class="list-item-actions">
+                    <button class="btn btn-icon btn-secondary" onclick="adminPanel.editAward(${award.id})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    addNewAward() {
+        // Initialize awards array if it doesn't exist
+        if (!this.content.awards) {
+            this.content.awards = [];
+        }
+        
+        const newId = this.content.awards.length > 0 ? Math.max(...this.content.awards.map(a => a.id)) + 1 : 1;
+        const newAward = {
+            id: newId,
+            title: 'New Award',
+            description: 'Award description',
+            icon: 'fas fa-award',
+            iconGradient: 'from-yellow-400 to-amber-500',
+            bgGradient: 'from-yellow-50 to-amber-50',
+            borderColor: 'border-yellow-200'
+        };
+        
+        this.content.awards.push(newAward);
+        window.contentManager.updateSection('awards', this.content.awards).then(() => {
+            this.loadAwards();
+            this.editAward(newId);
+            this.showToast('New award added!', 'success');
+        });
+    }
+
+    editAward(id) {
+        const award = this.content.awards.find(a => a.id === id);
+        if (!award) return;
+
+        document.getElementById('award-id').value = award.id;
+        document.getElementById('award-title').value = award.title || '';
+        document.getElementById('award-description').value = award.description || '';
+        document.getElementById('award-icon').value = award.icon || 'fas fa-award';
+        document.getElementById('award-image').value = award.image || '';
+        
+        // Set gradient value - combine the three parts and find matching option
+        const gradientValue = `${award.iconGradient}|${award.bgGradient}|${award.borderColor}`;
+        const gradientSelect = document.getElementById('award-gradient');
+        
+        // Try to find a matching option, otherwise default to first option
+        let found = false;
+        for (let option of gradientSelect.options) {
+            if (option.value === gradientValue) {
+                gradientSelect.value = gradientValue;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            gradientSelect.selectedIndex = 0; // Default to Gold
+        }
+
+        this.openModal('award-modal');
+    }
+
+    saveAward() {
+        const id = parseInt(document.getElementById('award-id').value);
+        const awardIndex = this.content.awards.findIndex(a => a.id === id);
+        
+        if (awardIndex === -1) return;
+
+        // Parse the gradient value
+        const gradientValue = document.getElementById('award-gradient').value;
+        const [iconGradient, bgGradient, borderColor] = gradientValue.split('|');
+
+        this.content.awards[awardIndex] = {
+            id: id,
+            title: document.getElementById('award-title').value,
+            description: document.getElementById('award-description').value,
+            icon: document.getElementById('award-icon').value,
+            image: document.getElementById('award-image').value,
+            iconGradient: iconGradient,
+            bgGradient: bgGradient,
+            borderColor: borderColor
+        };
+
+        window.contentManager.updateSection('awards', this.content.awards).then(() => {
+            this.closeModal('award-modal');
+            this.loadAwards();
+            this.showToast('Award updated successfully!', 'success');
+        }).catch(() => {
+            this.showToast('Error saving award', 'error');
+        });
+    }
+
+    deleteAward() {
+        const id = parseInt(document.getElementById('award-id').value);
+        
+        if (confirm('Are you sure you want to delete this award?')) {
+            this.content.awards = this.content.awards.filter(a => a.id !== id);
+            window.contentManager.updateSection('awards', this.content.awards).then(() => {
+                this.closeModal('award-modal');
+                this.loadAwards();
+                this.showToast('Award deleted!', 'success');
+            });
+        }
+    }
+
+    // Clients Management
+    loadClients() {
+        const container = document.getElementById('clients-container');
+        if (!container) return;
+
+        // Initialize clients array if it doesn't exist
+        if (!this.content.clients) {
+            this.content.clients = [];
+        }
+
+        const clients = this.content.clients;
+        
+        if (clients.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">No clients added yet. Click "Add Client" to create your first client.</p>';
+            return;
+        }
+        
+        container.innerHTML = clients.map((client, index) => {
+            const colorMap = {
+                blue: 'from-blue-500 to-blue-600',
+                green: 'from-green-500 to-emerald-600',
+                purple: 'from-purple-500 to-violet-600',
+                orange: 'from-orange-500 to-red-600',
+                red: 'from-red-500 to-red-600',
+                indigo: 'from-indigo-500 to-indigo-600',
+                pink: 'from-pink-500 to-pink-600',
+                emerald: 'from-emerald-500 to-teal-600'
+            };
+            const gradient = client.gradient || colorMap[client.colorClass] || colorMap.blue;
+            
+            return `
+            <div class="service-admin-card">
+                <div class="service-icon-preview" style="background: linear-gradient(135deg, ${this.gradientToColors(gradient).from}, ${this.gradientToColors(gradient).to});">
+                    <i class="${client.icon}" style="color: white;"></i>
+                </div>
+                <h4 style="font-weight: 600; margin-bottom: 0.5rem;">${client.name}</h4>
+                <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">${client.industry}</p>
+                <button class="btn btn-sm btn-secondary" onclick="adminPanel.editClient(${client.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+            </div>
+            `;
+        }).join('');
+    }
+
+    gradientToColors(gradient) {
+        // Convert Tailwind gradient class to hex colors (approximate)
+        const colorMap = {
+            'blue-500': '#3b82f6', 'blue-600': '#2563eb',
+            'green-500': '#22c55e', 'emerald-600': '#059669',
+            'purple-500': '#a855f7', 'violet-600': '#7c3aed',
+            'orange-500': '#f97316', 'red-600': '#dc2626',
+            'red-500': '#ef4444',
+            'indigo-500': '#6366f1', 'indigo-600': '#4f46e5',
+            'pink-500': '#ec4899', 'pink-600': '#db2777',
+            'emerald-500': '#10b981', 'teal-600': '#0d9488'
+        };
+        
+        const parts = gradient.match(/from-(\S+)\s+to-(\S+)/);
+        if (!parts) return { from: '#3b82f6', to: '#2563eb' };
+        
+        return {
+            from: colorMap[parts[1]] || '#3b82f6',
+            to: colorMap[parts[2]] || '#2563eb'
+        };
+    }
+
+    addNewClient() {
+        // Initialize clients array if it doesn't exist
+        if (!this.content.clients) {
+            this.content.clients = [];
+        }
+        
+        const newId = this.content.clients.length > 0 ? Math.max(...this.content.clients.map(c => c.id)) + 1 : 1;
+        const newClient = {
+            id: newId,
+            name: 'New Client',
+            industry: 'Technology',
+            icon: 'fas fa-building',
+            image: '',
+            colorClass: 'blue',
+            gradient: 'from-blue-500 to-blue-600'
+        };
+        
+        this.content.clients.push(newClient);
+        window.contentManager.updateSection('clients', this.content.clients).then(() => {
+            this.loadClients();
+            this.editClient(newId);
+            this.showToast('New client added!', 'success');
+        });
+    }
+
+    editClient(id) {
+        const client = this.content.clients.find(c => c.id === id);
+        if (!client) return;
+
+        document.getElementById('client-id').value = client.id;
+        document.getElementById('client-name').value = client.name || '';
+        document.getElementById('client-industry').value = client.industry || '';
+        document.getElementById('client-icon').value = client.icon || 'fas fa-building';
+        document.getElementById('client-image').value = client.image || '';
+        document.getElementById('client-colorClass').value = client.colorClass || 'blue';
+
+        this.openModal('client-modal');
+    }
+
+    saveClient() {
+        const id = parseInt(document.getElementById('client-id').value);
+        const clientIndex = this.content.clients.findIndex(c => c.id === id);
+        
+        if (clientIndex === -1) return;
+
+        const colorClass = document.getElementById('client-colorClass').value;
+        const gradientMap = {
+            'blue': 'from-blue-500 to-blue-600',
+            'green': 'from-green-500 to-emerald-600',
+            'purple': 'from-purple-500 to-violet-600',
+            'orange': 'from-orange-500 to-red-600',
+            'red': 'from-red-500 to-red-600',
+            'indigo': 'from-indigo-500 to-indigo-600',
+            'pink': 'from-pink-500 to-pink-600',
+            'emerald': 'from-emerald-500 to-teal-600'
+        };
+
+        this.content.clients[clientIndex] = {
+            id: id,
+            name: document.getElementById('client-name').value,
+            industry: document.getElementById('client-industry').value,
+            icon: document.getElementById('client-icon').value,
+            image: document.getElementById('client-image').value,
+            colorClass: colorClass,
+            gradient: gradientMap[colorClass] || gradientMap['blue']
+        };
+
+        window.contentManager.updateSection('clients', this.content.clients).then(() => {
+            this.closeModal('client-modal');
+            this.loadClients();
+            this.showToast('Client updated successfully!', 'success');
+        }).catch(() => {
+            this.showToast('Error saving client', 'error');
+        });
+    }
+
+    deleteClient() {
+        const id = parseInt(document.getElementById('client-id').value);
+        
+        if (confirm('Are you sure you want to delete this client?')) {
+            this.content.clients = this.content.clients.filter(c => c.id !== id);
+            window.contentManager.updateSection('clients', this.content.clients).then(() => {
+                this.closeModal('client-modal');
+                this.loadClients();
+                this.showToast('Client deleted!', 'success');
+            });
+        }
     }
 
     resetAllContent() {

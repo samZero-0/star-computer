@@ -55,7 +55,7 @@ router.put('/', async (req, res) => {
 router.put('/:section', async (req, res) => {
     try {
         const { section } = req.params;
-        const validSections = ['company', 'heroSlides', 'stats', 'services', 'about', 'contact', 'socialLinks', 'footer'];
+        const validSections = ['company', 'heroSlides', 'stats', 'awards', 'clients', 'services', 'about', 'contact', 'socialLinks', 'footer'];
         
         if (!validSections.includes(section)) {
             return res.status(400).json({ message: 'Invalid section name' });
