@@ -16,6 +16,16 @@
     --border-color: #334155;
 }
 
+/* Light mode variables */
+body.light-mode {
+    --dark: #ffffff;
+    --dark-light: #f9fafb;
+    --dark-lighter: #f3f4f6;
+    --text-light: #111827;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -1285,4 +1295,94 @@ textarea.form-control {
 .from-indigo-400.to-violet-500 { --tw-gradient-stops: #818cf8, #8b5cf6; }
 .from-red-500.to-green-500 { --tw-gradient-stops: #ef4444, #22c55e; }
 .from-green-500.to-red-500 { --tw-gradient-stops: #22c55e, #ef4444; }
+
+/* Image Input Group */
+.image-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.image-input-group .form-control {
+    flex: 1;
+}
+
+.image-input-group .btn {
+    white-space: nowrap;
+}
+
+/* Media Picker Modal */
+.media-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.media-picker-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    background: var(--dark-lighter);
+}
+
+.media-picker-item:hover {
+    border-color: var(--primary);
+    transform: scale(1.02);
+}
+
+.media-picker-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.media-picker-item .picker-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.media-picker-item:hover .picker-overlay {
+    opacity: 1;
+}
+
+.media-picker-item .picker-overlay i {
+    color: white;
+    font-size: 1.5rem;
+}
+
+.media-picker-item .picker-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    font-size: 0.75rem;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+    .media-picker-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .image-input-group {
+        flex-direction: column;
+    }
+}
 

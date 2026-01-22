@@ -135,12 +135,31 @@
         .nav-scrolled .nav-link:hover {
             color: #dc2626 !important;
         }
+        .nav-scrolled .nav-link .absolute {
+            background: rgba(220, 38, 38, 0.05) !important;
+        }
+        .nav-scrolled #mobileMenuBtn {
+            color: #111827 !important;
+        }
+        .nav-scrolled .logo-tagline {
+            color: #6b7280 !important;
+        }
         
-        /* Nav link default state - black text */
+        /* Nav link default state - white text for hero section */
         .nav-link {
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: #111827;
+            color: #ffffff !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .nav-link:hover {
+            color: #fbbf24 !important;
+        }
+        #mobileMenuBtn {
+            color: #ffffff !important;
+        }
+        .logo-tagline {
+            color: rgba(255,255,255,0.7) !important;
         }
         
         /* Custom scrollbar */
@@ -157,15 +176,15 @@
             background: #dc2626;
         }
         
-        /* Awards Marquee */
+        /* Awards Marquee - Clean Modern Design */
         .awards-marquee-container {
             overflow: hidden;
-            padding: 2rem 0;
+            padding: 3rem 0;
         }
         .awards-marquee {
             display: flex;
-            gap: 2rem;
-            animation: marquee 35s linear infinite;
+            gap: 3rem;
+            animation: marquee 40s linear infinite;
         }
         .awards-marquee:hover {
             animation-play-state: paused;
@@ -176,39 +195,314 @@
         }
         .award-item {
             flex-shrink: 0;
-            backdrop-filter: blur(10px);
         }
-        .award-item:hover .award-icon {
-            transform: scale(1.1) rotate(5deg);
+        .award-item:hover .award-image-wrapper {
+            transform: translateY(-8px) scale(1.05);
+        }
+        .award-image-wrapper {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .award-image-wrapper img {
+            transition: all 0.3s ease;
+            filter: grayscale(20%);
+        }
+        .award-item:hover .award-image-wrapper img {
+            filter: grayscale(0%);
+        }
+        .award-img {
+            max-width: 100%;
+            max-height: 120px;
+            object-fit: contain;
         }
         
-        /* Client Cards */
-        .client-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Dotted Glow Background - Aceternity UI Style */
+        .dotted-bg {
+            background-color: rgb(248 250 252);
+        }
+        
+        /* Glow Orbs Animation */
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: glowFloat 8s ease-in-out infinite;
+        }
+        .glow-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.2));
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+        .glow-orb-2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(59, 130, 246, 0.2));
+            bottom: -150px;
+            right: -100px;
+            animation-delay: 2s;
+        }
+        .glow-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(59, 130, 246, 0.15));
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 4s;
+        }
+        @keyframes glowFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.5;
+            }
+            25% {
+                transform: translate(20px, -30px) scale(1.05);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-10px, 20px) scale(0.95);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(15px, 10px) scale(1.02);
+                opacity: 0.55;
+            }
+        }
+        .glow-orb-3 {
+            animation-name: glowFloatCenter;
+        }
+        @keyframes glowFloatCenter {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.6;
+            }
+        }
+        
+        /* Client Cards - Modern Design */
+        .clients-showcase {
             position: relative;
+        }
+        
+        /* Grid Layout */
+        .clients-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* Carousel/Slider Layout */
+        .clients-carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 1rem 0 2rem;
+            -webkit-overflow-scrolling: touch;
+        }
+        .clients-carousel::-webkit-scrollbar {
+            height: 6px;
+        }
+        .clients-carousel::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+        .clients-carousel::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+        }
+        .clients-carousel .client-card-modern {
+            scroll-snap-align: start;
+            flex: 0 0 320px;
+        }
+        
+        /* Marquee Layout */
+        .clients-marquee {
+            display: flex;
+            gap: 2rem;
+            animation: clientsMarquee 30s linear infinite;
+        }
+        .clients-marquee:hover {
+            animation-play-state: paused;
+        }
+        @keyframes clientsMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* Modern Client Card Base */
+        .client-card-modern {
+            position: relative;
+            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
-        .client-card::before {
+        
+        /* Card Style: Elevated */
+        .client-card-elevated {
+            background: white;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
+        }
+        .client-card-elevated:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Card Style: Glass */
+        .client-card-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 2.5rem 2rem;
+        }
+        .client-card-glass:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Card Style: Gradient Border */
+        .client-card-gradient {
+            background: white;
+            padding: 2.5rem 2rem;
+            position: relative;
+        }
+        .client-card-gradient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .client-card-gradient:hover::before {
+            opacity: 1;
+        }
+        .client-card-gradient:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Card Style: Minimal */
+        .client-card-minimal {
+            background: transparent;
+            padding: 2rem 1.5rem;
+            border: 2px solid #e5e7eb;
+        }
+        .client-card-minimal:hover {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+        
+        /* Simple Client Logo */
+        .client-logo-simple {
+            width: 140px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .client-logo-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(20%);
+            opacity: 0.85;
+            transition: all 0.4s ease;
+        }
+        .client-card-modern:hover .client-logo-img {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .client-card-modern:hover .client-logo-simple {
+            transform: translateY(-5px);
+        }
+        .client-logo-simple i {
+            font-size: 3rem;
+            color: #9ca3af;
+            transition: all 0.4s ease;
+        }
+        .client-card-modern:hover .client-logo-simple i {
+            color: #3b82f6;
+            transform: scale(1.1);
+        }
+        
+        /* Shine effect */
+        .client-card-modern::after {
             content: '';
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
         }
-        .client-card:hover::before {
+        .client-card-modern:hover::after {
             left: 100%;
         }
-        .client-card:hover {
-            transform: translateY(-8px);
+        
+        /* Client Name - Simple */
+        .client-name-simple {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #4b5563;
+            text-align: center;
+            line-height: 1.4;
+            transition: color 0.3s ease;
         }
-        .client-logo-wrapper {
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .client-card-modern:hover .client-name-simple {
+            color: #1f2937;
         }
-        .client-card:hover .client-logo-wrapper {
-            transform: scale(1.15) rotate(5deg);
+        
+        /* Navigation arrows for carousel */
+        .clients-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .clients-nav-btn:hover {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .clients-nav-prev { left: -25px; }
+        .clients-nav-next { right: -25px; }
+        
+        @media (max-width: 768px) {
+            .clients-nav-btn { display: none; }
+            .clients-carousel .client-card-modern { flex: 0 0 280px; }
         }
     </style>
 </head>
@@ -241,28 +535,36 @@
                         <img src="./star logo.png" alt="Star Computers" class="w-full h-full object-contain transition-transform group-hover:scale-110">
                     </div>
                     <div class="flex flex-col">
-                        <span class="text-xl font-bold bg-gradient-to-r from-red-600 to-green-600 bg-clip-text text-transparent">STAR COMPUTERS</span>
-                        <span class="text-[10px] text-gray-500 tracking-wider -mt-1">EST. 1993</span>
+                        <span class="text-xl font-bold bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">STAR COMPUTERS</span>
+                        <span class="logo-tagline text-[10px] tracking-wider -mt-1">EST. 1993</span>
                     </div>
                 </a>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-1">
-                    <a href="#home" class="nav-link text-gray-900 hover:text-red-600 px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
+                    <a href="#home" class="nav-link px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
                         <span class="relative z-10">Home</span>
-                        <div class="absolute inset-0 bg-red-500/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                        <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-lg"></div>
                     </a>
-                    <a href="#services" class="nav-link text-gray-900 hover:text-red-600 px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
+                    <a href="#services" class="nav-link px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
                         <span class="relative z-10">Services</span>
-                        <div class="absolute inset-0 bg-red-500/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                        <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-lg"></div>
                     </a>
-                    <a href="#about" class="nav-link text-gray-900 hover:text-red-600 px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
+                    <a href="#awards" class="nav-link px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
+                        <span class="relative z-10">Awards</span>
+                        <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-lg"></div>
+                    </a>
+                    <a href="#clients" class="nav-link px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
+                        <span class="relative z-10">Clients</span>
+                        <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-lg"></div>
+                    </a>
+                    <a href="#about" class="nav-link px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
                         <span class="relative z-10">About</span>
-                        <div class="absolute inset-0 bg-red-500/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                        <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-lg"></div>
                     </a>
-                    <a href="#contact" class="nav-link text-gray-900 hover:text-red-600 px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
+                    <a href="#contact" class="nav-link px-4 py-2 rounded-lg transition-all relative overflow-hidden group font-medium">
                         <span class="relative z-10">Contact</span>
-                        <div class="absolute inset-0 bg-red-500/5 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                        <div class="absolute inset-0 bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-lg"></div>
                     </a>
                     <a href="tel:+8801712908621" class="ml-4 bg-gradient-to-r from-red-600 to-green-600 text-white px-5 py-2 rounded-lg font-medium hover:shadow-lg hover:shadow-red-500/20 transition-all hover:-translate-y-0.5">
                         <i class="fas fa-phone text-sm mr-2"></i>Call Us
@@ -270,7 +572,7 @@
                 </div>
                 
                 <!-- Mobile Menu Button -->
-                <button id="mobileMenuBtn" class="md:hidden text-gray-800 p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <button id="mobileMenuBtn" class="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -283,6 +585,8 @@
             <div class="px-6 py-6 space-y-1">
                 <a href="#home" class="block text-gray-700 hover:text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-all font-medium">Home</a>
                 <a href="#services" class="block text-gray-700 hover:text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-all font-medium">Services</a>
+                <a href="#awards" class="block text-gray-700 hover:text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-all font-medium">Awards</a>
+                <a href="#clients" class="block text-gray-700 hover:text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-all font-medium">Clients</a>
                 <a href="#about" class="block text-gray-700 hover:text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-all font-medium">About</a>
                 <a href="#contact" class="block text-gray-700 hover:text-red-600 hover:bg-red-50 px-4 py-3 rounded-lg transition-all font-medium">Contact</a>
                 <a href="tel:+8801712908621" class="block bg-gradient-to-r from-red-600 to-green-600 text-white text-center px-5 py-3 rounded-lg font-medium mt-4 hover:shadow-lg transition-all">
@@ -509,29 +813,46 @@
     </section>
 
     <!-- Clients Section -->
-    <section id="clients" class="py-24 bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 relative overflow-hidden" style="display: none;">
-        <!-- Animated Background Elements -->
-        <div class="absolute inset-0">
-            <div class="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-purple-500/10 to-transparent rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full blur-3xl"></div>
+    <section id="clients" class="py-24 relative overflow-hidden" style="display: none;">
+        <!-- Dotted Glow Background (Aceternity UI Style) -->
+        <div class="absolute inset-0 dotted-bg">
+            <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgb(156 163 175 / 0.4) 1px, transparent 0); background-size: 24px 24px;"></div>
+            <!-- Radial glow masks -->
+            <div class="absolute pointer-events-none inset-0 flex items-center justify-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" style="background: linear-gradient(to bottom right, rgb(248 250 252), rgb(241 245 249), rgb(226 232 240));"></div>
+        </div>
+        
+        <!-- Animated Glow Orbs -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="glow-orb glow-orb-1"></div>
+            <div class="glow-orb glow-orb-2"></div>
+            <div class="glow-orb glow-orb-3"></div>
         </div>
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-20 reveal">
-                <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/60 backdrop-blur-sm rounded-full mb-6 border border-blue-200/50 shadow-sm">
+            <div class="text-center mb-16 reveal">
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full mb-6 border border-blue-200/50 shadow-sm">
                     <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                     <span class="text-blue-700 font-semibold text-sm tracking-wide uppercase">Trusted Partners</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-bold mb-5">
-                    <span class="bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">Our Clients</span>
+                <h2 class="text-4xl md:text-6xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent">Our Valued Clients</span>
                 </h2>
-                <p class="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">Partnering with leading organizations across diverse industries to deliver exceptional IT solutions</p>
+                <p class="text-gray-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">Partnering with leading organizations across diverse industries to deliver exceptional IT solutions and drive digital transformation</p>
             </div>
             
-            <!-- Clients Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="clients-grid">
+            <!-- Clients Container - Layout determined by settings -->
+            <div class="clients-showcase relative" id="clients-showcase">
+                <!-- Navigation buttons (for carousel) -->
+                <button class="clients-nav-btn clients-nav-prev hidden" onclick="scrollClientsCarousel(-1)">
+                    <i class="fas fa-chevron-left text-gray-600"></i>
+                </button>
+                <button class="clients-nav-btn clients-nav-next hidden" onclick="scrollClientsCarousel(1)">
+                    <i class="fas fa-chevron-right text-gray-600"></i>
+                </button>
+                
                 <!-- Client cards will be dynamically loaded here -->
+                <div class="clients-grid-modern" id="clients-grid">
+                </div>
             </div>
         </div>
     </section>
@@ -1044,6 +1365,16 @@
             clone.removeAttribute('id');
             awardsTrack.parentElement.appendChild(clone);
         }
+
+        // Clients carousel scroll function
+        function scrollClientsCarousel(direction) {
+            const carousel = document.querySelector('.clients-carousel');
+            if (carousel) {
+                const cardWidth = 340; // card width + gap
+                carousel.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+            }
+        }
+        window.scrollClientsCarousel = scrollClientsCarousel;
     </script>
 </body>
 </html>

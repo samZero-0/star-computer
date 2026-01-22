@@ -5,6 +5,7 @@ class AdminPanel {
         this.content = window.contentManager.getContent();
         this.currentSection = 'dashboard';
         this.mediaLibrary = JSON.parse(localStorage.getItem('mediaLibrary')) || [];
+        this.mediaPickerTargetInput = null;
         this.themeSettings = JSON.parse(localStorage.getItem('themeSettings')) || {
             primaryColor: '#dc2626',
             secondaryColor: '#16a34a',
@@ -257,9 +258,10 @@ class AdminPanel {
             if (hexInput) hexInput.value = theme[field] || '#000000';
         });
 
-        // Set theme mode buttons
+        // Set theme mode buttons and apply to admin panel
         document.getElementById('theme-light')?.classList.toggle('active', theme.mode === 'light');
         document.getElementById('theme-dark')?.classList.toggle('active', theme.mode === 'dark');
+        document.body.classList.toggle('light-mode', theme.mode === 'light');
 
         this.updateThemePreview();
     }
@@ -285,6 +287,9 @@ class AdminPanel {
         this.themeSettings.mode = mode;
         document.getElementById('theme-light')?.classList.toggle('active', mode === 'light');
         document.getElementById('theme-dark')?.classList.toggle('active', mode === 'dark');
+        
+        // Toggle admin panel light mode
+        document.body.classList.toggle('light-mode', mode === 'light');
         
         if (mode === 'dark') {
             this.themeSettings.bgColor = '#1f2937';
@@ -413,6 +418,56 @@ class AdminPanel {
         localStorage.setItem('mediaLibrary', JSON.stringify(this.mediaLibrary));
         this.loadMediaLibrary();
         this.showToast('Image deleted', 'success');
+    }
+
+    // Media Picker for selecting images from library
+    openMediaPicker(targetInputId) {
+        this.mediaPickerTargetInput = targetInputId;
+        const modal = document.getElementById('media-picker-modal');
+        const grid = document.getElementById('media-picker-grid');
+        const emptyMsg = document.getElementById('media-picker-empty');
+
+        if (this.mediaLibrary.length === 0) {
+            grid.style.display = 'none';
+            emptyMsg.style.display = 'block';
+        } else {
+            grid.style.display = 'grid';
+            emptyMsg.style.display = 'none';
+            grid.innerHTML = this.mediaLibrary.map(img => `
+                <div class="media-picker-item" onclick="adminPanel.selectMediaImage('${img.url.replace(/'/g, "\\'")}')">
+                    <img src="${img.url}" alt="${img.name}">
+                    <div class="picker-overlay">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="picker-name">${img.name}</div>
+                </div>
+            `).join('');
+        }
+
+        modal.classList.add('active');
+    }
+
+    selectMediaImage(url) {
+        if (this.mediaPickerTargetInput) {
+            const input = document.getElementById(this.mediaPickerTargetInput);
+            if (input) {
+                input.value = url;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                // Trigger any associated preview updates
+                if (this.mediaPickerTargetInput === 'client-image') {
+                    this.updateClientPreview();
+                }
+            }
+        }
+        this.closeMediaPicker();
+        this.showToast('Image selected!', 'success');
+    }
+
+    closeMediaPicker() {
+        const modal = document.getElementById('media-picker-modal');
+        modal.classList.remove('active');
+        this.mediaPickerTargetInput = null;
     }
 
     addExternalImage() {
@@ -1043,8 +1098,12 @@ class AdminPanel {
         container.innerHTML = awards.map((award, index) => `
             <div class="list-item">
                 <div class="list-item-content">
-                    <div class="list-item-title"><i class="${award.icon}" style="margin-right: 8px;"></i>${award.title}</div>
-                    <div class="list-item-subtitle">${award.description}</div>
+                    <div class="list-item-image" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; background: #f3f4f6; border-radius: 8px; margin-right: 12px;">
+                        ${award.image ? `<img src="${award.image}" alt="${award.title}" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px;">` : `<i class="${award.icon || 'fas fa-trophy'}" style="font-size: 24px; color: #6b7280;"></i>`}
+                    </div>
+                    <div style="flex: 1;">
+                        <div class="list-item-title">${award.title}</div>
+                    </div>
                 </div>
                 <div class="list-item-actions">
                     <button class="btn btn-icon btn-secondary" onclick="adminPanel.editAward(${award.id})">
@@ -1065,11 +1124,8 @@ class AdminPanel {
         const newAward = {
             id: newId,
             title: 'New Award',
-            description: 'Award description',
-            icon: 'fas fa-award',
-            iconGradient: 'from-yellow-400 to-amber-500',
-            bgGradient: 'from-yellow-50 to-amber-50',
-            borderColor: 'border-yellow-200'
+            image: '',
+            icon: 'fas fa-trophy'
         };
         
         this.content.awards.push(newAward);
@@ -1086,26 +1142,7 @@ class AdminPanel {
 
         document.getElementById('award-id').value = award.id;
         document.getElementById('award-title').value = award.title || '';
-        document.getElementById('award-description').value = award.description || '';
-        document.getElementById('award-icon').value = award.icon || 'fas fa-award';
         document.getElementById('award-image').value = award.image || '';
-        
-        // Set gradient value - combine the three parts and find matching option
-        const gradientValue = `${award.iconGradient}|${award.bgGradient}|${award.borderColor}`;
-        const gradientSelect = document.getElementById('award-gradient');
-        
-        // Try to find a matching option, otherwise default to first option
-        let found = false;
-        for (let option of gradientSelect.options) {
-            if (option.value === gradientValue) {
-                gradientSelect.value = gradientValue;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            gradientSelect.selectedIndex = 0; // Default to Gold
-        }
 
         this.openModal('award-modal');
     }
@@ -1116,19 +1153,11 @@ class AdminPanel {
         
         if (awardIndex === -1) return;
 
-        // Parse the gradient value
-        const gradientValue = document.getElementById('award-gradient').value;
-        const [iconGradient, bgGradient, borderColor] = gradientValue.split('|');
-
         this.content.awards[awardIndex] = {
             id: id,
             title: document.getElementById('award-title').value,
-            description: document.getElementById('award-description').value,
-            icon: document.getElementById('award-icon').value,
             image: document.getElementById('award-image').value,
-            iconGradient: iconGradient,
-            bgGradient: bgGradient,
-            borderColor: borderColor
+            icon: 'fas fa-trophy'
         };
 
         window.contentManager.updateSection('awards', this.content.awards).then(() => {
@@ -1162,6 +1191,13 @@ class AdminPanel {
         if (!this.content.clients) {
             this.content.clients = [];
         }
+        
+        // Load section settings
+        const settings = this.content.clientsSettings || { layout: 'grid', cardStyle: 'elevated' };
+        const layoutSelect = document.getElementById('clients-layout');
+        const cardStyleSelect = document.getElementById('clients-cardStyle');
+        if (layoutSelect) layoutSelect.value = settings.layout || 'grid';
+        if (cardStyleSelect) cardStyleSelect.value = settings.cardStyle || 'elevated';
 
         const clients = this.content.clients;
         
@@ -1171,26 +1207,13 @@ class AdminPanel {
         }
         
         container.innerHTML = clients.map((client, index) => {
-            const colorMap = {
-                blue: 'from-blue-500 to-blue-600',
-                green: 'from-green-500 to-emerald-600',
-                purple: 'from-purple-500 to-violet-600',
-                orange: 'from-orange-500 to-red-600',
-                red: 'from-red-500 to-red-600',
-                indigo: 'from-indigo-500 to-indigo-600',
-                pink: 'from-pink-500 to-pink-600',
-                emerald: 'from-emerald-500 to-teal-600'
-            };
-            const gradient = client.gradient || colorMap[client.colorClass] || colorMap.blue;
-            
             return `
-            <div class="service-admin-card">
-                <div class="service-icon-preview" style="background: linear-gradient(135deg, ${this.gradientToColors(gradient).from}, ${this.gradientToColors(gradient).to});">
-                    <i class="${client.icon}" style="color: white;"></i>
+            <div class="service-admin-card" style="position: relative;">
+                <div style="width: 100px; height: 70px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; background: var(--bg-light); border-radius: 12px; padding: 0.5rem;">
+                    ${client.image ? `<img src="${client.image}" alt="${client.name}" style="max-width: 100%; max-height: 100%; object-fit: contain;">` : `<i class="${client.icon || 'fas fa-building'}" style="color: var(--text-muted); font-size: 2rem;"></i>`}
                 </div>
-                <h4 style="font-weight: 600; margin-bottom: 0.5rem;">${client.name}</h4>
-                <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1rem;">${client.industry}</p>
-                <button class="btn btn-sm btn-secondary" onclick="adminPanel.editClient(${client.id})">
+                <h4 style="font-weight: 600; margin-bottom: 1rem; text-align: center;">${client.name}</h4>
+                <button class="btn btn-sm btn-secondary" onclick="adminPanel.editClient(${client.id})" style="width: 100%;">
                     <i class="fas fa-edit"></i> Edit
                 </button>
             </div>
@@ -1234,7 +1257,8 @@ class AdminPanel {
             icon: 'fas fa-building',
             image: '',
             colorClass: 'blue',
-            gradient: 'from-blue-500 to-blue-600'
+            cardStyle: '', // Use default
+            gradient: 'from-blue-500 to-cyan-500'
         };
         
         this.content.clients.push(newClient);
@@ -1255,8 +1279,45 @@ class AdminPanel {
         document.getElementById('client-icon').value = client.icon || 'fas fa-building';
         document.getElementById('client-image').value = client.image || '';
         document.getElementById('client-colorClass').value = client.colorClass || 'blue';
+        document.getElementById('client-cardStyle').value = client.cardStyle || '';
+        
+        // Setup live preview updates
+        this.setupClientPreview();
+        this.updateClientPreview();
 
         this.openModal('client-modal');
+    }
+    
+    setupClientPreview() {
+        const inputs = ['client-name', 'client-image'];
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.removeEventListener('input', this.updateClientPreview.bind(this));
+                el.removeEventListener('change', this.updateClientPreview.bind(this));
+                el.addEventListener('input', this.updateClientPreview.bind(this));
+                el.addEventListener('change', this.updateClientPreview.bind(this));
+            }
+        });
+    }
+    
+    updateClientPreview() {
+        const name = document.getElementById('client-name')?.value || 'Client Name';
+        const image = document.getElementById('client-image')?.value || '';
+        
+        // Update preview logo
+        const logoEl = document.getElementById('client-preview-logo');
+        if (logoEl) {
+            if (image) {
+                logoEl.innerHTML = `<img src="${image}" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: contain;" onerror="this.outerHTML='<i class=\\'fas fa-building\\' style=\\'font-size: 3rem; color: #9ca3af;\\'></i>'">`;
+            } else {
+                logoEl.innerHTML = `<i class="fas fa-building" style="font-size: 3rem; color: #9ca3af;"></i>`;
+            }
+        }
+        
+        // Update name
+        const nameEl = document.getElementById('client-preview-name');
+        if (nameEl) nameEl.textContent = name;
     }
 
     saveClient() {
@@ -1267,14 +1328,16 @@ class AdminPanel {
 
         const colorClass = document.getElementById('client-colorClass').value;
         const gradientMap = {
-            'blue': 'from-blue-500 to-blue-600',
-            'green': 'from-green-500 to-emerald-600',
-            'purple': 'from-purple-500 to-violet-600',
-            'orange': 'from-orange-500 to-red-600',
-            'red': 'from-red-500 to-red-600',
-            'indigo': 'from-indigo-500 to-indigo-600',
-            'pink': 'from-pink-500 to-pink-600',
-            'emerald': 'from-emerald-500 to-teal-600'
+            'blue': 'from-blue-500 to-cyan-500',
+            'cyan': 'from-cyan-500 to-blue-500',
+            'green': 'from-green-500 to-emerald-500',
+            'emerald': 'from-emerald-500 to-teal-500',
+            'purple': 'from-purple-500 to-violet-500',
+            'indigo': 'from-indigo-500 to-blue-500',
+            'pink': 'from-pink-500 to-rose-500',
+            'red': 'from-red-500 to-rose-500',
+            'orange': 'from-orange-500 to-amber-500',
+            'amber': 'from-amber-500 to-yellow-500'
         };
 
         this.content.clients[clientIndex] = {
@@ -1284,6 +1347,7 @@ class AdminPanel {
             icon: document.getElementById('client-icon').value,
             image: document.getElementById('client-image').value,
             colorClass: colorClass,
+            cardStyle: document.getElementById('client-cardStyle').value,
             gradient: gradientMap[colorClass] || gradientMap['blue']
         };
 
@@ -1294,6 +1358,24 @@ class AdminPanel {
         }).catch(() => {
             this.showToast('Error saving client', 'error');
         });
+    }
+    
+    saveClientsSettings() {
+        const settings = {
+            layout: document.getElementById('clients-layout')?.value || 'grid',
+            cardStyle: document.getElementById('clients-cardStyle')?.value || 'elevated'
+        };
+        
+        this.content.clientsSettings = settings;
+        window.contentManager.updateSection('clientsSettings', settings).then(() => {
+            this.showToast('Client section settings saved!', 'success');
+        }).catch(() => {
+            this.showToast('Error saving settings', 'error');
+        });
+    }
+    
+    previewClients() {
+        window.open('index.html#clients', '_blank');
     }
 
     deleteClient() {

@@ -513,6 +513,33 @@
                     </div>
                     <div class="card-body">
                         <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Manage client companies and their industries</p>
+                        
+                        <!-- Section Layout Settings -->
+                        <div class="form-row" style="margin-bottom: 2rem; padding: 1.5rem; background: var(--bg-light); border-radius: 12px; border: 1px solid var(--border-color);">
+                            <div style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: flex-end;">
+                                <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                                    <label class="form-label"><i class="fas fa-th-large" style="margin-right: 6px;"></i>Section Layout</label>
+                                    <select class="form-control" id="clients-layout" onchange="adminPanel.saveClientsSettings()">
+                                        <option value="grid">Grid Layout</option>
+                                        <option value="carousel">Carousel/Slider</option>
+                                        <option value="marquee">Auto-Scrolling Marquee</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                                    <label class="form-label"><i class="fas fa-palette" style="margin-right: 6px;"></i>Default Card Style</label>
+                                    <select class="form-control" id="clients-cardStyle" onchange="adminPanel.saveClientsSettings()">
+                                        <option value="elevated">Elevated (Modern Shadow)</option>
+                                        <option value="glass">Glass (Frosted Effect)</option>
+                                        <option value="gradient">Gradient Border</option>
+                                        <option value="minimal">Minimal (Simple Border)</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-secondary" onclick="adminPanel.previewClients()" style="white-space: nowrap;">
+                                    <i class="fas fa-eye"></i> Preview
+                                </button>
+                            </div>
+                        </div>
+                        
                         <div id="clients-container" class="services-grid"></div>
                     </div>
                 </div>
@@ -797,7 +824,12 @@
                 <input type="hidden" id="slide-id">
                 <div class="form-group">
                     <label class="form-label">Background Image URL</label>
-                    <input type="url" class="form-control" id="slide-bgImage">
+                    <div class="image-input-group">
+                        <input type="url" class="form-control" id="slide-bgImage">
+                        <button type="button" class="btn btn-secondary" onclick="adminPanel.openMediaPicker('slide-bgImage')">
+                            <i class="fas fa-images"></i> Library
+                        </button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -1026,40 +1058,23 @@
                 <input type="hidden" id="award-id">
                 <div class="form-group">
                     <label class="form-label">Award Title</label>
-                    <input type="text" class="form-control" id="award-title" placeholder="Best IT Service Provider">
+                    <input type="text" class="form-control" id="award-title" placeholder="Best IT Service Provider 2024">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Award Description / Organization</label>
-                    <input type="text" class="form-control" id="award-description" placeholder="Tech Excellence Awards 2024">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Image URL (Optional)</label>
-                    <input type="text" class="form-control" id="award-image" placeholder="https://example.com/award-image.png">
-                    <small class="form-hint">If provided, the image will be displayed instead of the icon</small>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">Icon (FontAwesome) - Fallback</label>
-                            <input type="text" class="form-control" id="award-icon" placeholder="fas fa-award">
-                            <small class="form-hint">Used if no image is provided. Examples: fas fa-award, fas fa-trophy, fas fa-certificate</small>
-                        </div>
+                    <label class="form-label">Award Image URL</label>
+                    <div class="image-input-group">
+                        <input type="text" class="form-control" id="award-image" placeholder="https://example.com/award-image.png">
+                        <button type="button" class="btn btn-secondary" onclick="adminPanel.openMediaPicker('award-image')">
+                            <i class="fas fa-images"></i> Library
+                        </button>
                     </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">Color Theme</label>
-                            <select class="form-control" id="award-gradient">
-                                <option value="from-yellow-400 to-amber-500|from-yellow-50 to-amber-50|border-yellow-200">Gold</option>
-                                <option value="from-blue-400 to-indigo-500|from-blue-50 to-indigo-50|border-blue-200">Blue</option>
-                                <option value="from-green-400 to-emerald-500|from-green-50 to-emerald-50|border-green-200">Green</option>
-                                <option value="from-purple-400 to-violet-500|from-purple-50 to-violet-50|border-purple-200">Purple</option>
-                                <option value="from-red-400 to-rose-500|from-red-50 to-rose-50|border-red-200">Red</option>
-                                <option value="from-pink-400 to-pink-500|from-pink-50 to-pink-50|border-pink-200">Pink</option>
-                                <option value="from-orange-400 to-amber-500|from-orange-50 to-amber-50|border-orange-200">Orange</option>
-                            </select>
-                        </div>
-                    </div>
+                    <small class="form-hint">Upload a clear award certificate or trophy image (recommended: PNG/JPG, 300x200px or larger)</small>
                 </div>
+                
+                <!-- Hidden fields for backward compatibility -->
+                <input type="hidden" id="award-description" value="">
+                <input type="hidden" id="award-icon" value="fas fa-trophy">
+                <input type="hidden" id="award-gradient" value="from-yellow-400 to-amber-500|from-yellow-50 to-amber-50|border-yellow-200">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" onclick="adminPanel.deleteAward()" style="margin-right: auto;">
@@ -1082,40 +1097,40 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="client-id">
+                
+                <!-- Client Name -->
                 <div class="form-group">
                     <label class="form-label">Client Name</label>
                     <input type="text" class="form-control" id="client-name" placeholder="Bangladesh Bank">
                 </div>
+                
+                <!-- Logo/Image -->
                 <div class="form-group">
-                    <label class="form-label">Industry</label>
-                    <input type="text" class="form-control" id="client-industry" placeholder="Banking">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Logo/Image URL (Optional)</label>
-                    <input type="text" class="form-control" id="client-image" placeholder="https://example.com/client-logo.png">
-                    <small class="form-hint">If provided, the logo will be displayed instead of the icon</small>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">Icon (FontAwesome) - Fallback</label>
-                            <input type="text" class="form-control" id="client-icon" placeholder="fas fa-university">
-                            <small class="form-hint">Used if no image is provided. Examples: fas fa-university, fas fa-hospital</small>
-                        </div>
+                    <label class="form-label">Logo/Image URL</label>
+                    <div class="image-input-group">
+                        <input type="text" class="form-control" id="client-image" placeholder="https://example.com/client-logo.png">
+                        <button type="button" class="btn btn-secondary" onclick="adminPanel.openMediaPicker('client-image')">
+                            <i class="fas fa-images"></i> Library
+                        </button>
                     </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label class="form-label">Color Theme</label>
-                            <select class="form-control" id="client-colorClass">
-                                <option value="blue">Blue</option>
-                                <option value="green">Green</option>
-                                <option value="purple">Purple</option>
-                                <option value="orange">Orange</option>
-                                <option value="red">Red</option>
-                                <option value="indigo">Indigo</option>
-                                <option value="pink">Pink</option>
-                                <option value="emerald">Emerald</option>
-                            </select>
+                    <small class="form-hint">Upload a clear logo image (recommended: PNG with transparent background)</small>
+                </div>
+                
+                <!-- Hidden fields for backward compatibility -->
+                <input type="hidden" id="client-industry" value="">
+                <input type="hidden" id="client-icon" value="fas fa-building">
+                <input type="hidden" id="client-colorClass" value="blue">
+                <input type="hidden" id="client-cardStyle" value="">
+                
+                <!-- Preview -->
+                <div class="form-group">
+                    <label class="form-label">Preview</label>
+                    <div id="client-preview" style="display: flex; justify-content: center; padding: 2rem; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; border: 1px solid var(--border-color);">
+                        <div class="client-preview-card" style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; min-width: 180px;">
+                            <div id="client-preview-logo" style="width: 120px; height: 80px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-building text-gray-400" style="font-size: 3rem;"></i>
+                            </div>
+                            <h4 id="client-preview-name" style="font-weight: 600; color: #4b5563; font-size: 0.95rem;">Client Name</h4>
                         </div>
                     </div>
                 </div>
@@ -1128,6 +1143,29 @@
                 <button class="btn btn-primary" onclick="adminPanel.saveClient()">
                     <i class="fas fa-save"></i> Save
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Picker Modal -->
+    <div id="media-picker-modal" class="modal-overlay">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-images"></i> Select from Media Library</h3>
+                <button class="modal-close" onclick="adminPanel.closeMediaPicker()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="media-picker-grid" id="media-picker-grid">
+                    <!-- Media items will be loaded here -->
+                </div>
+                <div id="media-picker-empty" style="display: none; text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>No images in your media library.</p>
+                    <p style="font-size: 0.875rem;">Go to Media Library to upload images first.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="adminPanel.closeMediaPicker()">Cancel</button>
             </div>
         </div>
     </div>

@@ -441,25 +441,22 @@ class ContentLoader {
         }
         
         if (awardsTrack && awards && awards.length > 0) {
-            // Generate awards with modern design
+            // Generate awards with clean, modern design
             const awardsHTML = awards.map((award, index) => {
                 // Use image if provided, otherwise fall back to icon
-                const iconOrImage = award.image && award.image.trim() !== '' 
-                    ? `<img src="${award.image}" alt="${award.title}" class="w-8 h-8 object-contain" onerror="this.onerror=null; this.outerHTML='<i class=\\'${award.icon} text-white text-xl\\'></i>';">`
-                    : `<i class="${award.icon} text-white text-xl"></i>`;
+                const displayContent = award.image && award.image.trim() !== '' 
+                    ? `<img src="${award.image}" alt="${award.title}" class="award-img" onerror="this.onerror=null; this.outerHTML='<i class=\\'${award.icon || 'fas fa-trophy'} text-gray-400\\'></i>';">`
+                    : `<i class="${award.icon || 'fas fa-trophy'} text-gray-400" style="font-size: 4rem;"></i>`;
                 
                 return `
-                <div class="award-item group flex items-center gap-5 px-7 py-5 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-gray-200 transition-all duration-300 min-w-max cursor-default">
-                    <div class="award-icon w-14 h-14 bg-gradient-to-br ${award.iconGradient} rounded-2xl flex items-center justify-center shadow-lg transition-transform duration-300">
-                        ${iconOrImage}
+                <div class="award-item group bg-white rounded-3xl p-6 shadow-sm hover:shadow-2xl transition-all duration-500 cursor-default" style="min-width: 280px; max-width: 280px;">
+                    <!-- Award Image -->
+                    <div class="award-image-wrapper mb-4 h-32 flex items-center justify-center">
+                        ${displayContent}
                     </div>
-                    <div class="pr-2">
-                        <h4 class="font-bold text-gray-900 text-base mb-1">${award.title}</h4>
-                        <p class="text-sm text-gray-500 flex items-center gap-1.5">
-                            <i class="fas fa-calendar-alt text-xs opacity-60"></i>
-                            ${award.description}
-                        </p>
-                    </div>
+                    
+                    <!-- Award Title -->
+                    <h4 class="font-bold text-gray-900 text-center text-base leading-snug">${award.title}</h4>
                 </div>
                 `;
             }).join('');
@@ -473,6 +470,7 @@ class ContentLoader {
         const clients = this.content.clients;
         const clientsSection = document.getElementById('clients');
         const clientsGrid = document.getElementById('clients-grid');
+        const clientsShowcase = document.getElementById('clients-showcase');
         
         console.log('Loading clients:', clients?.length, 'Clients grid found:', !!clientsGrid);
         
@@ -482,43 +480,131 @@ class ContentLoader {
         }
         
         if (clientsGrid && clients && clients.length > 0) {
+            // Get section settings from first client or use defaults
+            const sectionSettings = this.content.clientsSettings || {
+                layout: 'grid', // grid, carousel, marquee
+                cardStyle: 'elevated' // elevated, glass, gradient, minimal
+            };
+            
+            // Color map for different themes
             const colorMap = {
-                blue: { border: 'hover:border-blue-400', badge: 'text-blue-700 bg-blue-100', shadow: 'group-hover:shadow-blue-200/50' },
-                green: { border: 'hover:border-green-400', badge: 'text-green-700 bg-green-100', shadow: 'group-hover:shadow-green-200/50' },
-                purple: { border: 'hover:border-purple-400', badge: 'text-purple-700 bg-purple-100', shadow: 'group-hover:shadow-purple-200/50' },
-                orange: { border: 'hover:border-orange-400', badge: 'text-orange-700 bg-orange-100', shadow: 'group-hover:shadow-orange-200/50' },
-                red: { border: 'hover:border-red-400', badge: 'text-red-700 bg-red-100', shadow: 'group-hover:shadow-red-200/50' },
-                indigo: { border: 'hover:border-indigo-400', badge: 'text-indigo-700 bg-indigo-100', shadow: 'group-hover:shadow-indigo-200/50' },
-                pink: { border: 'hover:border-pink-400', badge: 'text-pink-700 bg-pink-100', shadow: 'group-hover:shadow-pink-200/50' },
-                emerald: { border: 'hover:border-emerald-400', badge: 'text-emerald-700 bg-emerald-100', shadow: 'group-hover:shadow-emerald-200/50' }
+                blue: { 
+                    gradient: 'from-blue-500 to-cyan-500',
+                    badge: 'bg-blue-100 text-blue-700',
+                    glow: 'bg-blue-500'
+                },
+                green: { 
+                    gradient: 'from-green-500 to-emerald-500',
+                    badge: 'bg-green-100 text-green-700',
+                    glow: 'bg-green-500'
+                },
+                purple: { 
+                    gradient: 'from-purple-500 to-violet-500',
+                    badge: 'bg-purple-100 text-purple-700',
+                    glow: 'bg-purple-500'
+                },
+                orange: { 
+                    gradient: 'from-orange-500 to-amber-500',
+                    badge: 'bg-orange-100 text-orange-700',
+                    glow: 'bg-orange-500'
+                },
+                red: { 
+                    gradient: 'from-red-500 to-rose-500',
+                    badge: 'bg-red-100 text-red-700',
+                    glow: 'bg-red-500'
+                },
+                indigo: { 
+                    gradient: 'from-indigo-500 to-blue-500',
+                    badge: 'bg-indigo-100 text-indigo-700',
+                    glow: 'bg-indigo-500'
+                },
+                pink: { 
+                    gradient: 'from-pink-500 to-rose-500',
+                    badge: 'bg-pink-100 text-pink-700',
+                    glow: 'bg-pink-500'
+                },
+                emerald: { 
+                    gradient: 'from-emerald-500 to-teal-500',
+                    badge: 'bg-emerald-100 text-emerald-700',
+                    glow: 'bg-emerald-500'
+                },
+                cyan: { 
+                    gradient: 'from-cyan-500 to-blue-500',
+                    badge: 'bg-cyan-100 text-cyan-700',
+                    glow: 'bg-cyan-500'
+                },
+                amber: { 
+                    gradient: 'from-amber-500 to-yellow-500',
+                    badge: 'bg-amber-100 text-amber-700',
+                    glow: 'bg-amber-500'
+                }
             };
 
-            clientsGrid.innerHTML = clients.map((client, index) => {
-                const colors = colorMap[client.colorClass] || colorMap.blue;
+            // Generate client card HTML
+            const generateClientCard = (client, index) => {
+                const cardStyle = client.cardStyle || sectionSettings.cardStyle || 'elevated';
+                
+                // Determine card style class
+                const cardStyleClass = {
+                    'elevated': 'client-card-elevated',
+                    'glass': 'client-card-glass',
+                    'gradient': 'client-card-gradient',
+                    'minimal': 'client-card-minimal'
+                }[cardStyle] || 'client-card-elevated';
                 
                 // Use image if provided, otherwise fall back to icon
-                const iconOrImage = client.image && client.image.trim() !== '' 
-                    ? `<img src="${client.image}" alt="${client.name}" class="w-10 h-10 object-contain" onerror="this.onerror=null; this.outerHTML='<i class=\\'${client.icon} text-white text-2xl\\'></i>';">`
-                    : `<i class="${client.icon} text-white text-2xl"></i>`;
+                const logoContent = client.image && client.image.trim() !== '' 
+                    ? `<img src="${client.image}" alt="${client.name}" class="client-logo-img">`
+                    : `<i class="${client.icon || 'fas fa-building'} text-gray-400 text-4xl"></i>`;
                 
                 return `
-                <div class="client-card group bg-white/70 backdrop-blur-sm p-7 rounded-3xl border-2 border-gray-200/50 ${colors.border} shadow-lg hover:shadow-2xl ${colors.shadow} transition-all duration-500 reveal cursor-pointer" ${index > 0 ? `style="transition-delay: ${index * 0.08}s;"` : ''}>
+                <div class="client-card-modern ${cardStyleClass} reveal" style="animation-delay: ${index * 0.1}s;">
                     <div class="flex flex-col items-center text-center">
-                        <div class="client-logo-wrapper relative mb-5">
-                            <div class="absolute inset-0 bg-gradient-to-br ${client.gradient} rounded-3xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
-                            <div class="relative w-20 h-20 bg-gradient-to-br ${client.gradient} rounded-3xl flex items-center justify-center shadow-xl">
-                                ${iconOrImage}
-                            </div>
+                        <!-- Logo -->
+                        <div class="client-logo-simple">
+                            ${logoContent}
                         </div>
-                        <h4 class="font-bold text-gray-900 text-lg mb-2 group-hover:text-gray-700 transition-colors">${client.name}</h4>
-                        <div class="flex items-center gap-1.5 ${colors.badge} px-4 py-1.5 rounded-full font-medium text-xs shadow-sm">
-                            <div class="w-1.5 h-1.5 rounded-full bg-current opacity-60"></div>
-                            ${client.industry}
-                        </div>
+                        
+                        <!-- Client Name -->
+                        <h4 class="client-name-simple">${client.name}</h4>
                     </div>
                 </div>
                 `;
-            }).join('');
+            };
+
+            // Generate all cards
+            const cardsHTML = clients.map((client, index) => generateClientCard(client, index)).join('');
+            
+            // Apply layout
+            const layout = sectionSettings.layout || 'grid';
+            
+            // Update container class based on layout
+            clientsGrid.className = '';
+            
+            // Show/hide navigation buttons
+            const navButtons = clientsShowcase?.querySelectorAll('.clients-nav-btn');
+            
+            switch (layout) {
+                case 'carousel':
+                    clientsGrid.className = 'clients-carousel';
+                    navButtons?.forEach(btn => btn.classList.remove('hidden'));
+                    clientsGrid.innerHTML = cardsHTML;
+                    break;
+                    
+                case 'marquee':
+                    clientsGrid.className = 'clients-marquee overflow-hidden';
+                    navButtons?.forEach(btn => btn.classList.add('hidden'));
+                    // Duplicate cards for seamless marquee
+                    clientsGrid.innerHTML = cardsHTML + cardsHTML;
+                    break;
+                    
+                case 'grid':
+                default:
+                    clientsGrid.className = 'clients-grid-modern';
+                    navButtons?.forEach(btn => btn.classList.add('hidden'));
+                    clientsGrid.innerHTML = cardsHTML;
+                    break;
+            }
             
             // Re-initialize reveal animations for new elements
             this.initRevealAnimations();

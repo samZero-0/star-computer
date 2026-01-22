@@ -72,6 +72,12 @@ const defaultContent = {
 
     // Clients
     clients: [],
+    
+    // Clients Section Settings
+    clientsSettings: {
+        layout: 'grid',      // grid, carousel, marquee
+        cardStyle: 'elevated' // elevated, glass, gradient, minimal
+    },
 
     // Services
     services: [
